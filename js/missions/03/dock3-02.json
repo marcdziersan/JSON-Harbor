@@ -1,0 +1,27 @@
+{
+  "id": "dock3-02",
+  "title": "Nested Address",
+  "description": "The destination must be a nested object under 'address' with strict fields. Fix the payload to match the schema.",
+  "story": {
+    "before": "A delivery captain complains: “We wrote the address, but the system keeps rejecting it. It wants a proper address object, not loose fields.”",
+    "success": "Routing updated. “Destination accepted. The cargo can be forwarded inland.”"
+  },
+  "input": "{ \"id\": 21, \"street\": \"Harbor Rd 5\", \"city\": \"Kaiserslautern\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "address"],
+    "properties": {
+      "id": { "type": "integer" },
+      "address": {
+        "type": "object",
+        "required": ["street", "city"],
+        "properties": {
+          "street": { "type": "string" },
+          "city": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

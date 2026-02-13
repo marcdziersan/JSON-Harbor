@@ -1,0 +1,30 @@
+{
+  "id": "dock4-01",
+  "title": "Items Must Be Objects",
+  "description": "The 'items' field must contain objects with id and name.",
+  "story": {
+    "before": "A shipment list arrives with loose entries. The logistics system requires structured item objects — not raw strings.",
+    "success": "Shipment structure verified. Each item is now properly defined."
+  },
+  "input": "{ \"shipmentId\": 100, \"items\": [\"box\", \"lamp\"] }",
+  "schema": {
+    "type": "object",
+    "required": ["shipmentId", "items"],
+    "properties": {
+      "shipmentId": { "type": "integer" },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id", "name"],
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}

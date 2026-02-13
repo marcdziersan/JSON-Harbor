@@ -1,0 +1,27 @@
+{
+  "id": "dock4-05",
+  "title": "Enum Values",
+  "description": "The shipment status must be one of: pending, cleared, rejected.",
+  "story": {
+    "before": "Status reports must follow strict state codes. Anything else confuses the harbor control system.",
+    "success": "Status verified. Shipment properly categorized."
+  },
+  "input": "{ \"shipmentId\": 104, \"status\": \"done\" }",
+  "schema": {
+    "type": "object",
+    "required": ["shipmentId", "status"],
+    "properties": {
+      "shipmentId": { "type": "integer" },
+      "status": { "type": "string" }
+    },
+    "additionalProperties": false
+  },
+  "rules": [
+    {
+      "type": "enum",
+      "path": "/status",
+      "values": ["pending", "cleared", "rejected"],
+      "message": "Status must be one of: pending, cleared, rejected."
+    }
+  ]
+}

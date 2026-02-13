@@ -1,0 +1,44 @@
+{
+  "id": "dock4-03",
+  "title": "Min/Max Items",
+  "description": "The shipment must contain between 2 and 4 items.",
+  "story": {
+    "before": "Capacity rules apply. Too few items waste resources. Too many overload the dock.",
+    "success": "Shipment size approved. Within operational limits."
+  },
+  "input": "{ \"shipmentId\": 102, \"items\": [ { \"id\": 1, \"name\": \"Lamp\" } ] }",
+  "schema": {
+    "type": "object",
+    "required": ["shipmentId", "items"],
+    "properties": {
+      "shipmentId": { "type": "integer" },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id", "name"],
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "rules": [
+    {
+      "type": "minItems",
+      "path": "/items",
+      "value": 2,
+      "message": "You need at least 2 items."
+    },
+    {
+      "type": "maxItems",
+      "path": "/items",
+      "value": 4,
+      "message": "You may ship at most 4 items."
+    }
+  ]
+}

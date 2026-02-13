@@ -1,0 +1,19 @@
+{
+  "id": "dock2-01",
+  "title": "ID Must Be Integer",
+  "description": "The harbor system requires a numeric integer ID. Fix the JSON to match the schema.",
+  "story": {
+    "before": "The customs terminal flashes red. “Shipment IDs must be numeric integers. Strings will not pass identity verification.”",
+    "success": "The terminal beeps green. “Numeric ID confirmed. Shipment registered.”"
+  },
+  "input": "{ \"id\": \"15\", \"item\": \"Pappkarton\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "item"],
+    "properties": {
+      "id": { "type": "integer" },
+      "item": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

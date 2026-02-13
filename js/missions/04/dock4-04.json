@@ -1,0 +1,39 @@
+{
+  "id": "dock4-04",
+  "title": "String Length Rules",
+  "description": "Each item name must be between 3 and 12 characters.",
+  "story": {
+    "before": "Label printers reject invalid names. Too short or too long names break automation.",
+    "success": "Label format accepted. All item names are within allowed length."
+  },
+  "input": "{ \"shipmentId\": 103, \"items\": [ { \"id\": 1, \"name\": \"OK\" }, { \"id\": 2, \"name\": \"VeryVeryLongItemName\" } ] }",
+  "schema": {
+    "type": "object",
+    "required": ["shipmentId", "items"],
+    "properties": {
+      "shipmentId": { "type": "integer" },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id", "name"],
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "rules": [
+    {
+      "type": "stringLength",
+      "path": "/items/*/name",
+      "min": 3,
+      "max": 12,
+      "message": "Item name must be between 3 and 12 characters."
+    }
+  ]
+}

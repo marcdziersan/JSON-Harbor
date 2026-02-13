@@ -1,0 +1,19 @@
+{
+  "id": "dock2-04",
+  "title": "Number vs Integer",
+  "description": "Weight can be a decimal number. Fix the payload so it matches the schema.",
+  "story": {
+    "before": "The logistics officer frowns. “Weight can include decimals. Don’t treat it like text.”",
+    "success": "Weight confirmed. Load calculations updated."
+  },
+  "input": "{ \"id\": 9, \"weight\": \"12.5\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "weight"],
+    "properties": {
+      "id": { "type": "integer" },
+      "weight": { "type": "number" }
+    },
+    "additionalProperties": false
+  }
+}

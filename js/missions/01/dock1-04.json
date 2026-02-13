@@ -1,0 +1,19 @@
+{
+  "id": "dock1-04",
+  "title": "Single Quotes Trap",
+  "description": "JSON requires double quotes. Convert this payload into valid JSON that matches the schema.",
+  "story": {
+    "before": "The customs officer squints: “Who wrote this with single quotes? This isn’t JavaScript. Our rules demand strict JSON.”",
+    "success": "The officer stamps the form. “Now it’s compliant. Double quotes only.”"
+  },
+  "input": "{ 'id': 12, 'status': 'cleared' }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "status"],
+    "properties": {
+      "id": { "type": "integer" },
+      "status": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

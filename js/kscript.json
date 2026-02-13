@@ -1,0 +1,334 @@
+{
+  "title": "Compendium",
+  "intro": "This compendium explains JSON fundamentals and the concepts behind each Dock. It is designed to help you reason about the missions without giving away exact solutions.",
+  "tags": ["JSON", "Validation", "Schema", "Rules", "Transform"],
+  "sections": [
+    {
+      "id": "core-json",
+      "title": "JSON Basics",
+      "subtitle": "What JSON is and what it is not",
+      "badges": ["Syntax", "Objects", "Arrays"],
+      "lead": "JSON is a strict data format. Your missions fail if the JSON is not valid or if it does not match the expected structure.",
+      "items": [
+        {
+          "title": "What is JSON?",
+          "meta": "Data format",
+          "question": "Why do we use JSON in web and APIs?",
+          "answer": "JSON (JavaScript Object Notation) is a text format used to exchange structured data. It is easy to read for humans and easy to parse for machines. In JSON Harbor, every manifest is JSON that must be valid and structurally correct.",
+          "pitfalls": [
+            "JSON is not the same as JavaScript object literal syntax.",
+            "JSON does not allow comments.",
+            "JSON requires double quotes for strings and keys."
+          ],
+          "example": "{\n  \"id\": 1,\n  \"name\": \"Container\"\n}"
+        },
+        {
+          "title": "Objects and Arrays",
+          "meta": "Structure",
+          "question": "When do I use an object and when an array?",
+          "answer": "Use an <b>object</b> when you describe one entity with named fields (key/value). Use an <b>array</b> when you have a list of items in a specific order.",
+          "tip": "If the schema expects an object but you provide an array (or vice versa), validation fails even if the content looks similar.",
+          "example": "{ \"shipmentId\": 100, \"items\": [ {\"id\":1,\"name\":\"box\"} ] }"
+        },
+        {
+          "title": "Allowed value types",
+          "meta": "Types",
+          "question": "What values can JSON contain?",
+          "answer": "JSON supports: <b>string</b>, <b>number</b>, <b>boolean</b>, <b>null</b>, <b>object</b>, and <b>array</b>.",
+          "pitfalls": [
+            "\"true\" is a string, true is a boolean.",
+            "\"12.5\" is a string, 12.5 is a number."
+          ],
+          "example": "{\n  \"text\": \"hello\",\n  \"n\": 12.5,\n  \"ok\": true,\n  \"notes\": null,\n  \"list\": [1,2,3]\n}"
+        }
+      ]
+    },
+
+    {
+      "id": "core-errors",
+      "title": "Common JSON Errors",
+      "subtitle": "Why parsing fails before validation even starts",
+      "badges": ["Quotes", "Commas", "Strictness"],
+      "lead": "Some missions fail at the parsing stage. That means the JSON is not valid text, so no schema can be checked yet.",
+      "items": [
+        {
+          "title": "Double quotes only",
+          "meta": "Dock 1",
+          "question": "Why do single quotes fail?",
+          "answer": "JSON requires <b>double quotes</b> for keys and string values. Single quotes are common in JavaScript, but invalid in JSON. If you paste content from formatted sources, you may also get “smart quotes” which are invalid.",
+          "tip": "Always ensure keys and strings use: \"like this\" (ASCII quote).",
+          "example": "{ \"status\": \"cleared\" }"
+        },
+        {
+          "title": "Trailing commas",
+          "meta": "Dock 1",
+          "question": "Why does one extra comma break everything?",
+          "answer": "In JSON, there may not be a comma after the last element in an object or array. Many languages allow it, JSON does not.",
+          "example": "{ \"id\": 3, \"name\": \"Lamp\" }"
+        }
+      ]
+    },
+
+    {
+      "id": "core-schema",
+      "title": "Schema and Validation",
+      "subtitle": "Why valid JSON can still fail missions",
+      "badges": ["required", "properties", "additionalProperties"],
+      "lead": "Your JSON can be valid, but still rejected by the harbor rules. That is schema validation: structure + required fields + types.",
+      "items": [
+        {
+          "title": "Required fields",
+          "meta": "Dock 2 & 3",
+          "question": "What does required mean?",
+          "answer": "If a field is required, it must exist. If it’s missing, validation fails even if everything else is correct.",
+          "tip": "A missing required field is different from a field with value null. Missing means the key is not present.",
+          "example": "{ \"id\": 20, \"owner\": \"Unknown\" }"
+        },
+        {
+          "title": "No extra fields",
+          "meta": "Dock 3",
+          "question": "Why does an extra property get rejected?",
+          "answer": "Some schemas enforce <b>additionalProperties: false</b>. That means: only keys listed under properties are allowed. Any extra field is rejected.",
+          "example": "{ \"id\": 3, \"name\": \"Teekanne\" }"
+        }
+      ]
+    },
+
+    {
+      "id": "dock1-guide",
+      "dock": "dock1",
+      "title": "Dock 1 — Syntax & Basics",
+      "subtitle": "The harbor gate only opens for valid JSON",
+      "badges": ["Parse", "Quotes", "Comma", "Array vs Object"],
+      "lead": "Dock 1 teaches you how to produce valid JSON text. Think like a parser: no guessing, only strict rules.",
+      "items": [
+        {
+          "title": "dock1-01 Broken Manifest",
+          "meta": "Fix invalid syntax",
+          "question": "What is the hidden idea?",
+          "answer": "The manifest looks almost correct but breaks strict JSON rules. Your job is to make it valid JSON <i>and</i> match the required keys.",
+          "tip": "Valid JSON needs quoted keys and correct punctuation."
+        },
+        {
+          "title": "dock1-02 Missing Quotes",
+          "meta": "Strict key quoting",
+          "question": "What is tested here?",
+          "answer": "Keys must be strings in JSON. That means they must be quoted. The harbor scanner is strict.",
+          "pitfalls": ["Unquoted keys", "Smart quotes from copy/paste"]
+        },
+        {
+          "title": "dock1-03 Trailing Comma",
+          "meta": "One extra character",
+          "question": "Why is this mission useful?",
+          "answer": "It teaches the common parser error: trailing commas. You learn to spot it instantly.",
+          "tip": "Look at the last property/element in objects and arrays."
+        },
+        {
+          "title": "dock1-04 Single Quotes Trap",
+          "meta": "Not JavaScript",
+          "question": "What mindset shift do you need?",
+          "answer": "JSON is not a JS object. Replace single quotes with double quotes and ensure everything remains valid.",
+          "pitfalls": ["'single quotes'", "“smart quotes”"]
+        },
+        {
+          "title": "dock1-05 Array vs Object",
+          "meta": "Wrong top-level structure",
+          "question": "What is the core lesson?",
+          "answer": "Sometimes the values are correct but the container is wrong. The schema expects one object, not an array containing one object.",
+          "tip": "Top-level structure matters as much as internal fields."
+        }
+      ]
+    },
+
+    {
+      "id": "dock2-guide",
+      "dock": "dock2",
+      "title": "Dock 2 — Types & Required Fields",
+      "subtitle": "Valid JSON is not enough: type correctness matters",
+      "badges": ["integer", "number", "boolean", "null", "required"],
+      "lead": "Dock 2 teaches that JSON values have types. A string that looks like a number is still a string.",
+      "items": [
+        {
+          "title": "dock2-01 ID Must Be Integer",
+          "meta": "Type mismatch",
+          "question": "What is the tricky part?",
+          "answer": "An ID that looks numeric can still be the wrong type. The harbor expects an integer, not a quoted string.",
+          "tip": "If you see quotes around a number, it’s a string."
+        },
+        {
+          "title": "dock2-02 Missing Required Field",
+          "meta": "Required property",
+          "question": "How do you think about required fields?",
+          "answer": "Required means “must exist”. Add the missing key. Choose a sensible value so the data stays coherent.",
+          "tip": "Don’t overthink: add what’s required in the correct type."
+        },
+        {
+          "title": "dock2-03 Boolean Not String",
+          "meta": "true vs \"true\"",
+          "question": "Why do systems care?",
+          "answer": "Booleans represent truth values for logic. A string \"true\" is just text and cannot be reliably used in boolean checks.",
+          "pitfalls": ["\"true\" (string) vs true (boolean)"]
+        },
+        {
+          "title": "dock2-04 Number vs Integer",
+          "meta": "Decimals",
+          "question": "What’s the conceptual difference?",
+          "answer": "An integer has no decimals. A number may include decimals. If the schema says number, don’t wrap it in quotes.",
+          "tip": "Numbers never use quotes in JSON."
+        },
+        {
+          "title": "dock2-05 Null Handling",
+          "meta": "Explicit null",
+          "question": "When do you use null?",
+          "answer": "Use null when a field exists but has no value. Some schemas require null specifically to indicate “intentionally empty”.",
+          "tip": "Empty string \"\" is not null."
+        }
+      ]
+    },
+
+    {
+      "id": "dock3-guide",
+      "dock": "dock3",
+      "title": "Dock 3 — Structure & Additional Properties",
+      "subtitle": "Nested objects, strict keys, and list item types",
+      "badges": ["nested", "items", "additionalProperties"],
+      "lead": "Dock 3 teaches structure. You will move fields into nested objects, reject unknown keys, and ensure array item types are correct.",
+      "items": [
+        {
+          "title": "dock3-01 No Extra Fields",
+          "meta": "Strict object",
+          "question": "What is the point?",
+          "answer": "The harbor schema lists allowed fields. Any extra field is considered untrusted and gets rejected.",
+          "tip": "Remove what isn’t allowed instead of trying to justify it."
+        },
+        {
+          "title": "dock3-02 Nested Address",
+          "meta": "Restructure",
+          "question": "What is tested?",
+          "answer": "The schema wants an address object. You must place street and city inside that nested object and remove them from the top level.",
+          "tip": "Read required fields at each nesting level."
+        },
+        {
+          "title": "dock3-03 Array Items Type",
+          "meta": "List typing",
+          "question": "Why does one wrong item break it?",
+          "answer": "Arrays can enforce item types. If items must be strings, every item must be a string — no exceptions.",
+          "tip": "Fix or remove invalid items to keep the list consistent."
+        },
+        {
+          "title": "dock3-04 Object vs Array Mixup",
+          "meta": "Containers list",
+          "question": "What is the underlying bug?",
+          "answer": "Data looks like a list but is encoded as an object with numeric keys. Convert it to a real array of integers.",
+          "tip": "Arrays use [ ] and keep order."
+        },
+        {
+          "title": "dock3-05 Required in Nested Object",
+          "meta": "Nested required",
+          "question": "What do you learn here?",
+          "answer": "Requirements apply in nested objects too. Owner is present, but incomplete. Add the missing required nested field(s).",
+          "tip": "Nested required fields are a common real-world validation failure."
+        }
+      ]
+    },
+
+    {
+      "id": "dock4-guide",
+      "dock": "dock4",
+      "title": "Dock 4 — Lists & Items Validation",
+      "subtitle": "Business rules beyond schema",
+      "badges": ["unique", "minItems", "maxItems", "enum", "stringLength"],
+      "lead": "Dock 4 introduces additional rules that feel like real business constraints: uniqueness, range limits, allowed values, and naming rules.",
+      "items": [
+        {
+          "title": "dock4-01 Items Must Be Objects",
+          "meta": "Array of objects",
+          "question": "What’s the concept?",
+          "answer": "Lists are most useful when each entry is structured. Items must be objects with consistent fields so the harbor can label, count, and track them.",
+          "tip": "Convert raw strings into objects with the required fields."
+        },
+        {
+          "title": "dock4-02 IDs Unique (Soft Rule)",
+          "meta": "Uniqueness",
+          "question": "Why is uniqueness needed?",
+          "answer": "Tracking systems depend on IDs. If two items share the same ID, every scan becomes ambiguous. The rule enforces unique IDs.",
+          "tip": "Keep the data realistic: don’t duplicate identities."
+        },
+        {
+          "title": "dock4-03 Min/Max Items",
+          "meta": "Capacity constraints",
+          "question": "Why do min/max rules exist?",
+          "answer": "Operational constraints: too few items may waste capacity, too many may overload the dock. The rule enforces a safe range.",
+          "tip": "Ensure the list length is inside the permitted range."
+        },
+        {
+          "title": "dock4-04 String Length Rules",
+          "meta": "Label limits",
+          "question": "Why does length matter?",
+          "answer": "Label printers and databases often impose length restrictions. Too short is ambiguous, too long breaks layouts and systems.",
+          "tip": "Rename items so they meet the allowed character range."
+        },
+        {
+          "title": "dock4-05 Enum Values",
+          "meta": "Allowed states",
+          "question": "What does enum mean?",
+          "answer": "Enum restricts a field to a fixed set of allowed values. This prevents spelling variants and keeps reporting consistent.",
+          "tip": "Choose one of the allowed values — no custom ones."
+        }
+      ]
+    },
+
+    {
+      "id": "dock5-guide",
+      "dock": "dock5",
+      "title": "Dock 5 — Transform & Expected Output",
+      "subtitle": "From fixing data to shaping data",
+      "badges": ["expected", "deepEqual", "transform"],
+      "lead": "Dock 5 is about producing an exact expected output. This is common in ETL and API normalization tasks.",
+      "items": [
+        {
+          "title": "Expected output mindset",
+          "meta": "Precision",
+          "question": "Why does the mission require exact output?",
+          "answer": "Some systems compare results exactly (tests, pipelines). Your output must match the expected structure and values.",
+          "tip": "Keep key names and nesting exactly as required."
+        },
+        {
+          "title": "dock5-01 Create fullName",
+          "meta": "Field composition",
+          "question": "What is the lesson?",
+          "answer": "You combine fields to create a new one. This is normalization: preparing data for downstream systems.",
+          "tip": "Output only what is requested."
+        },
+        {
+          "title": "dock5-02 Normalize Keys",
+          "meta": "Naming standards",
+          "question": "Why normalize?",
+          "answer": "Different systems use different key conventions. Normalizing keys makes data consistent and easier to process.",
+          "tip": "Change keys, not the meaning of values."
+        },
+        {
+          "title": "dock5-03 Group Orders",
+          "meta": "Aggregation",
+          "question": "What’s going on conceptually?",
+          "answer": "You reorganize a flat list into grouped structures. That is aggregation: grouping by a property and collecting related IDs.",
+          "tip": "Stable ordering can matter when exact comparisons are used."
+        },
+        {
+          "title": "dock5-04 Extract Summary",
+          "meta": "Derivation",
+          "question": "What’s the goal?",
+          "answer": "You derive a compact summary from a larger structure. That is typical in dashboards and reporting.",
+          "tip": "Count items carefully; don’t guess."
+        },
+        {
+          "title": "dock5-05 Final Clearance",
+          "meta": "Final format",
+          "question": "Why nested report objects?",
+          "answer": "Nested objects make it clear which fields belong together. It’s a clean way to publish a structured result.",
+          "tip": "Match the expected nesting exactly."
+        }
+      ]
+    }
+  ]
+}

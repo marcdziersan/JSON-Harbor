@@ -1,0 +1,38 @@
+{
+  "id": "dock4-02",
+  "title": "IDs Unique (Soft Rule)",
+  "description": "All item IDs must be unique.",
+  "story": {
+    "before": "The supervisor raises an eyebrow. “Duplicate IDs cause tracking conflicts. Each item must have a unique identifier.”",
+    "success": "Tracking integrity restored. No duplicate IDs detected."
+  },
+  "input": "{ \"shipmentId\": 101, \"items\": [ { \"id\": 1, \"name\": \"Rope\" }, { \"id\": 1, \"name\": \"Cardboard\" } ] }",
+  "schema": {
+    "type": "object",
+    "required": ["shipmentId", "items"],
+    "properties": {
+      "shipmentId": { "type": "integer" },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id", "name"],
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "rules": [
+    {
+      "type": "unique",
+      "path": "/items",
+      "key": "id",
+      "message": "Item IDs must be unique."
+    }
+  ]
+}

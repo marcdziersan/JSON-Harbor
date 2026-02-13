@@ -1,0 +1,22 @@
+{
+  "id": "dock3-03",
+  "title": "Array Items Type",
+  "description": "The 'tags' list must contain only strings. Fix the payload so every array item matches the schema.",
+  "story": {
+    "before": "The labeling machine jams. “Tags must be text labels only. One wrong type in the list breaks the whole print job.”",
+    "success": "Labels print smoothly. “All tags are valid strings. Shipment labeling completed.”"
+  },
+  "input": "{ \"id\": 5, \"tags\": [\"fragile\", 99, \"export\"] }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "tags"],
+    "properties": {
+      "id": { "type": "integer" },
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "additionalProperties": false
+  }
+}

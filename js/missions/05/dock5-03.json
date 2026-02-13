@@ -1,0 +1,16 @@
+{
+  "id": "dock5-03",
+  "title": "Group Orders",
+  "description": "Group orders by customer and output structured data.",
+  "story": {
+    "before": "Multiple orders arrive fragmented. “Reorganize them. Group by customer so accounting can process them.”",
+    "success": "Accounting smiles. “Grouped correctly. Reporting will be smooth.”"
+  },
+  "input": "{ \"orders\": [ { \"id\": 1, \"customer\": \"A\" }, { \"id\": 2, \"customer\": \"B\" }, { \"id\": 3, \"customer\": \"A\" } ] }",
+  "expected": {
+    "customers": [
+      { "name": "A", "orderIds": [1, 3] },
+      { "name": "B", "orderIds": [2] }
+    ]
+  }
+}

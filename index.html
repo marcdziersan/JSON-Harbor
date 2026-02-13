@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>JSON Harbor — Compendium</title>
+  <link rel="stylesheet" href="./css/kstyle.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">⚓</div>
+      <div class="brand-text">
+        <div class="brand-title">JSON Harbor</div>
+        <div class="brand-sub">Compendium — Learn the rules behind the missions</div>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="btn primary" href="game.html">Start Game →</a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="panel">
+        <div class="panel-title">Navigate</div>
+
+        <label class="field">
+          <span class="field-label">Search</span>
+          <input id="search" class="input" type="search" placeholder="Type: quotes, array, required, enum..." />
+        </label>
+
+        <div id="nav" class="nav"></div>
+
+        <div class="note">
+          <div class="note-title">How to use this</div>
+          <div class="note-text">
+            Read a concept first, then return to the mission. This compendium is written to help you think, not to give away exact solutions.
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div class="hero">
+        <h1 id="doc-title">Compendium</h1>
+        <p id="doc-intro" class="lead"></p>
+        <div class="chips" id="doc-tags"></div>
+      </div>
+
+      <div id="cards" class="cards"></div>
+
+      <footer class="footer">
+        <div class="footer-line"></div>
+        <div class="footer-text">
+          JSON Harbor Compendium — focused explanations for Dock missions (Syntax, Types, Structure, Rules, Transform).
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    // Loads content from kscript.json and renders as searchable cards/accordions.
+    const DATA_PATH = "js/kscript.json";
+
+    const elTitle = document.getElementById("doc-title");
+    const elIntro = document.getElementById("doc-intro");
+    const elTags  = document.getElementById("doc-tags");
+    const elNav   = document.getElementById("nav");
+    const elCards = document.getElementById("cards");
+    const elSearch = document.getElementById("search");
+
+    let MODEL = null;
+
+    function esc(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function slugify(s) {
+      return String(s).toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 80);
+    }
+
+    function renderTags(tags) {
+      if (!Array.isArray(tags) || tags.length === 0) {
+        elTags.innerHTML = "";
+        return;
+      }
+      elTags.innerHTML = tags.map(t => `<span class="chip">${esc(t)}</span>`).join("");
+    }
+
+    function buildNav(sections) {
+      const groups = [];
+      for (const s of sections) {
+        groups.push({ id: s._id, title: s.title, dock: s.dock || null });
+      }
+
+      // Group docks first, then general sections
+      const dockGroups = groups.filter(g => g.dock);
+      const general = groups.filter(g => !g.dock);
+
+      function renderGroup(label, items) {
+        if (items.length === 0) return "";
+        return `
+          <div class="nav-group">
+            <div class="nav-group-title">${esc(label)}</div>
+            ${items.map(it => `<a class="nav-link" href="#${esc(it.id)}">${esc(it.title)}</a>`).join("")}
+          </div>
+        `;
+      }
+
+      elNav.innerHTML = `
+        ${renderGroup("Core Concepts", general)}
+        ${renderGroup("Dock Guides", dockGroups)}
+      `;
+    }
+
+    function cardHTML(section) {
+      const id = section._id;
+      const title = esc(section.title);
+      const subtitle = section.subtitle ? `<div class="subtitle">${esc(section.subtitle)}</div>` : "";
+      const badges = Array.isArray(section.badges) && section.badges.length
+        ? `<div class="badges">${section.badges.map(b => `<span class="badge">${esc(b)}</span>`).join("")}</div>`
+        : "";
+
+      const items = Array.isArray(section.items) ? section.items : [];
+      const itemsHTML = items.map((it, idx) => {
+        const q = it.question ? `<div class="qa-q">${esc(it.question)}</div>` : "";
+        const a = it.answer ? `<div class="qa-a">${it.answer}</div>` : ""; // answer may contain HTML from JSON
+        const tip = it.tip ? `<div class="tip"><span class="tip-k">Hint:</span> ${esc(it.tip)}</div>` : "";
+        const pit = it.pitfalls && it.pitfalls.length
+          ? `<ul class="pitfalls">${it.pitfalls.map(p => `<li>${esc(p)}</li>`).join("")}</ul>`
+          : "";
+        const mini = it.example ? `
+          <div class="example">
+            <div class="example-label">Example</div>
+            <pre class="code notranslate" translate="no">${esc(it.example)}</pre>
+          </div>` : "";
+
+        return `
+          <details class="accordion" ${idx === 0 ? "open" : ""}>
+            <summary>
+              <span class="acc-title">${esc(it.title || ("Item " + (idx+1)))}</span>
+              <span class="acc-meta">${esc(it.meta || "")}</span>
+            </summary>
+            <div class="acc-body">
+              ${q}
+              ${a}
+              ${tip}
+              ${pit}
+              ${mini}
+            </div>
+          </details>
+        `;
+      }).join("");
+
+      return `
+        <article class="card" id="${esc(id)}" data-search="${esc((section._search || "").toLowerCase())}">
+          <div class="card-head">
+            <div class="card-title">
+              <h2>${title}</h2>
+              ${subtitle}
+            </div>
+            ${badges}
+          </div>
+          <div class="card-body">
+            ${section.lead ? `<p class="card-lead">${esc(section.lead)}</p>` : ""}
+            ${itemsHTML}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderCards(sections) {
+      elCards.innerHTML = sections.map(cardHTML).join("");
+    }
+
+    function applySearch(q) {
+      const query = String(q || "").trim().toLowerCase();
+      const cards = Array.from(document.querySelectorAll(".card"));
+      if (!query) {
+        cards.forEach(c => c.classList.remove("hidden"));
+        return;
+      }
+      cards.forEach(c => {
+        const hay = c.getAttribute("data-search") || "";
+        c.classList.toggle("hidden", !hay.includes(query));
+      });
+    }
+
+    async function init() {
+      const res = await fetch(DATA_PATH, { cache: "no-store" });
+      if (!res.ok) {
+        elIntro.textContent = "Failed to load kscript.json. Check file path and server.";
+        return;
+      }
+      const data = await res.json();
+      MODEL = data;
+
+      elTitle.textContent = data.title || "Compendium";
+      elIntro.textContent = data.intro || "";
+      renderTags(data.tags || []);
+
+      const sections = Array.isArray(data.sections) ? data.sections : [];
+      // enrich with ids + search index
+      for (const s of sections) {
+        s._id = s.id ? String(s.id) : slugify(s.title || "section");
+        const bits = [];
+        bits.push(s.title || "");
+        bits.push(s.subtitle || "");
+        bits.push(s.lead || "");
+        (s.badges || []).forEach(b => bits.push(b));
+        (s.items || []).forEach(it => {
+          bits.push(it.title || "");
+          bits.push(it.question || "");
+          // strip HTML-ish from answer (quick)
+          bits.push(String(it.answer || "").replace(/<[^>]+>/g, " "));
+          (it.pitfalls || []).forEach(p => bits.push(p));
+          bits.push(it.tip || "");
+          bits.push(it.meta || "");
+        });
+        s._search = bits.join(" • ");
+      }
+
+      buildNav(sections);
+      renderCards(sections);
+
+      elSearch.addEventListener("input", () => applySearch(elSearch.value));
+
+      // initial hash scroll fix for dynamically rendered content
+      if (location.hash) {
+        const id = location.hash.slice(1);
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    init().catch(err => {
+      elIntro.textContent = "Startup error: " + (err && err.message ? err.message : String(err));
+    });
+  </script>
+</body>
+</html>

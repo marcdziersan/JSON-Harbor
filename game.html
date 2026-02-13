@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON Harbor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="header-row">
+    <div class="header-left">
+      <h1>⚓ JSON Harbor</h1>
+      <div class="mission-info">
+        <span id="mission-title">Welcome...</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <a class="toplink" href="index.html">Compendium</a>
+      <a class="toplink primary" id="dock-help-link" href="index.html#dock1-guide">Dock Help</a>
+    </div>
+  </div>
+</header>
+
+<!-- INTRO / DOCK COMPLETE OVERLAY -->
+<div id="overlay" class="overlay overlay-show">
+    <div class="overlay-card">
+        <div class="overlay-title" id="overlay-title">Welcome to JSON Harbor</div>
+        <div class="overlay-text" id="overlay-text">
+            Tonight the fog is thick. Ships are arriving with damaged manifests.<br>
+            Your job: inspect the payloads, fix the JSON, and clear the cargo.
+        </div>
+
+        <div class="overlay-actions">
+            <button id="overlay-secondary" class="btn-secondary" style="display:none;">Back</button>
+            <button id="overlay-primary" class="btn-primary">Continue</button>
+        </div>
+    </div>
+</div>
+
+<main class="container">
+
+    <!-- Left: Progress / Dock list -->
+    <section class="panel left-panel">
+        <h2>Harbor Log</h2>
+
+        <div class="progress-summary" id="progress-summary">Loading...</div>
+        <div id="mission-list" class="mission-list"></div>
+    </section>
+
+    <!-- Center: Editor -->
+    <section class="panel editor-panel">
+        <h2>JSON Editor</h2>
+        <textarea id="json-editor" spellcheck="false"></textarea>
+
+        <div class="editor-actions">
+            <button id="reset-btn">Reset</button>
+            <button id="validate-btn">Validate</button>
+        </div>
+    </section>
+
+    <!-- Right: Feedback -->
+    <section class="panel right-panel">
+        <h2>Validation Result</h2>
+        <div id="feedback" class="feedback neutral">
+            Awaiting validation...
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    JSON Harbor – Inspect. Validate. Release.
+</footer>
+
+<script src="js/validator.js"></script>
+<script src="js/comparator.js"></script>
+<script src="js/engine.js"></script>
+
+</body>
+</html>

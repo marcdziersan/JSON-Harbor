@@ -1,0 +1,127 @@
+{
+  "gameTitle": "JSON Harbor",
+  "version": "0.2.0",
+
+  "meta": {
+    "author": "JSON Harbor",
+    "difficulty": "progressive",
+    "description": "A narrative-flavored JSON validation learning experience."
+  },
+
+  "docks": [
+    {
+      "dockId": "dock1",
+      "dockTitle": "Dock 1 — Syntax & Basics",
+
+      "dockStory": {
+        "intro": "The first ships arrive in the early fog. Their manifests are damaged by sea water. Start with the basics — syntax must be flawless.",
+        "complete": "Good work. The harbor lights shine a little brighter. Syntax errors are no match for you anymore."
+      },
+
+      "npc": {
+        "name": "Harbor Clerk",
+        "role": "Junior Inspector"
+      },
+
+      "missions": [
+        { "id": "dock1-01", "title": "Broken Manifest", "file": "js/missions/01/dock1-01.json" },
+        { "id": "dock1-02", "title": "Missing Quotes", "file": "js/missions/01/dock1-02.json" },
+        { "id": "dock1-03", "title": "Trailing Comma", "file": "js/missions/01/dock1-03.json" },
+        { "id": "dock1-04", "title": "Single Quotes Trap", "file": "js/missions/01/dock1-04.json" },
+        { "id": "dock1-05", "title": "Array vs Object", "file": "js/missions/01/dock1-05.json" }
+      ]
+    },
+
+    {
+      "dockId": "dock2",
+      "dockTitle": "Dock 2 — Types & Required Fields",
+
+      "dockStory": {
+        "intro": "Now the cargo grows more complex. Numbers, booleans, nulls — precision matters.",
+        "complete": "Excellent. You now understand data types. The harbor trusts your inspections."
+      },
+
+      "npc": {
+        "name": "Customs Officer",
+        "role": "Type Inspector"
+      },
+
+      "missions": [
+        { "id": "dock2-01", "title": "ID Must Be Integer", "file": "js/missions/02/dock2-01.json" },
+        { "id": "dock2-02", "title": "Missing Required Field", "file": "js/missions/02/dock2-02.json" },
+        { "id": "dock2-03", "title": "Boolean Not String", "file": "js/missions/02/dock2-03.json" },
+        { "id": "dock2-04", "title": "Number vs Integer", "file": "js/missions/02/dock2-04.json" },
+        { "id": "dock2-05", "title": "Null Handling", "file": "js/missions/02/dock2-05.json" }
+      ]
+    },
+
+    {
+      "dockId": "dock3",
+      "dockTitle": "Dock 3 — Structure & Additional Properties",
+
+      "dockStory": {
+        "intro": "Manifests now contain nested structures. Hidden fields and illegal properties appear.",
+        "complete": "Structures no longer intimidate you. Nested cargo approved."
+      },
+
+      "npc": {
+        "name": "Structural Analyst",
+        "role": "Schema Specialist"
+      },
+
+      "missions": [
+        { "id": "dock3-01", "title": "No Extra Fields", "file": "js/missions/03/dock3-01.json" },
+        { "id": "dock3-02", "title": "Nested Address", "file": "js/missions/03/dock3-02.json" },
+        { "id": "dock3-03", "title": "Array Items Type", "file": "js/missions/03/dock3-03.json" },
+        { "id": "dock3-04", "title": "Object vs Array Mixup", "file": "js/missions/03/dock3-04.json" },
+        { "id": "dock3-05", "title": "Required in Nested Object", "file": "js/missions/03/dock3-05.json" }
+      ]
+    },
+
+    {
+      "dockId": "dock4",
+      "dockTitle": "Dock 4 — Lists & Items Validation",
+
+      "dockStory": {
+        "intro": "Shipments grow bigger. Lists must follow strict business rules. Duplicates and invalid entries cannot pass.",
+        "complete": "Your inspections are sharp. Even complex rule violations are caught."
+      },
+
+      "npc": {
+        "name": "Logistics Supervisor",
+        "role": "Rule Enforcement"
+      },
+
+      "missions": [
+        { "id": "dock4-01", "title": "Items Must Be Objects", "file": "js/missions/04/dock4-01.json" },
+        { "id": "dock4-02", "title": "IDs Unique (Soft Rule)", "file": "js/missions/04/dock4-02.json" },
+        { "id": "dock4-03", "title": "Min/Max Items", "file": "js/missions/04/dock4-03.json" },
+        { "id": "dock4-04", "title": "String Length Rules", "file": "js/missions/04/dock4-04.json" },
+        { "id": "dock4-05", "title": "Enum Values", "file": "js/missions/04/dock4-05.json" }
+      ]
+    },
+
+    {
+      "dockId": "dock5",
+      "dockTitle": "Dock 5 — Transform & Expected Output",
+
+      "dockStory": {
+        "intro": "Final challenge. You are no longer fixing broken manifests — you are transforming them.",
+        "complete": "The harbor gates close. You are now a certified JSON Harbor Inspector."
+      },
+
+      "npc": {
+        "name": "Harbor Master",
+        "role": "Chief Inspector"
+      },
+
+      "missions": [
+        { "id": "dock5-01", "title": "Create fullName", "file": "js/missions/05/dock5-01.json" },
+        { "id": "dock5-02", "title": "Normalize Keys", "file": "js/missions/05/dock5-02.json" },
+        { "id": "dock5-03", "title": "Group Orders", "file": "js/missions/05/dock5-03.json" },
+        { "id": "dock5-04", "title": "Extract Summary", "file": "js/missions/05/dock5-04.json" },
+        { "id": "dock5-05", "title": "Final Clearance", "file": "js/missions/05/dock5-05.json" }
+      ]
+    }
+  ]
+}

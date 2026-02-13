@@ -1,0 +1,14 @@
+{
+  "id": "dock5-02",
+  "title": "Normalize Keys",
+  "description": "Normalize snake_case keys to camelCase.",
+  "story": {
+    "before": "Legacy systems send inconsistent key styles. “Standardize them. The harbor prefers camelCase.”",
+    "success": "Standardization complete. Systems now speak the same language."
+  },
+  "input": "{ \"user_id\": 7, \"user_name\": \"HarborMaster\" }",
+  "expected": {
+    "userId": 7,
+    "userName": "HarborMaster"
+  }
+}

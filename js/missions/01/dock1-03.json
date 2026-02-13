@@ -1,0 +1,19 @@
+{
+  "id": "dock1-03",
+  "title": "Trailing Comma",
+  "description": "Remove the trailing comma to make the JSON valid and schema-compliant.",
+  "story": {
+    "before": "A loader shouts from the pier: “The manifest keeps failing with a tiny syntax error. I swear it’s just one extra character…”",
+    "success": "The loader gives a thumbs-up. “Yep. That was it. One comma too many.”"
+  },
+  "input": "{ \"id\": 3, \"name\": \"Lamp\", }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "name"],
+    "properties": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

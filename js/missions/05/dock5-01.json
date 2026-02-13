@@ -1,0 +1,13 @@
+{
+  "id": "dock5-01",
+  "title": "Create fullName",
+  "description": "Transform the payload: create 'fullName' from firstName + lastName.",
+  "story": {
+    "before": "The Harbor Master steps closer. “You’ve learned validation. Now show me transformation. Combine identity fields into a proper full name.”",
+    "success": "The Harbor Master nods slowly. “Clean transformation. You understand data shaping.”"
+  },
+  "input": "{ \"firstName\": \"Marcus\", \"lastName\": \"Dziersan\" }",
+  "expected": {
+    "fullName": "Marcus Dziersan"
+  }
+}

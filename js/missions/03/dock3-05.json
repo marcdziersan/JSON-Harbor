@@ -1,0 +1,27 @@
+{
+  "id": "dock3-05",
+  "title": "Required in Nested Object",
+  "description": "The nested 'owner' object must contain both firstName and lastName. Fix the payload to match the schema.",
+  "story": {
+    "before": "The ownership record is incomplete. “We need the full identity inside the owner object. Missing parts block legal clearance.”",
+    "success": "Ownership confirmed. “Complete identity recorded. Legal clearance granted.”"
+  },
+  "input": "{ \"id\": 14, \"owner\": { \"firstName\": \"Marcus\" } }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "owner"],
+    "properties": {
+      "id": { "type": "integer" },
+      "owner": {
+        "type": "object",
+        "required": ["firstName", "lastName"],
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

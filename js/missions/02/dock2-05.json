@@ -1,0 +1,19 @@
+{
+  "id": "dock2-05",
+  "title": "Null Handling",
+  "description": "The inspection notes must be explicitly null in this case.",
+  "story": {
+    "before": "An inspection report arrives with empty notes. The system demands clarity: if there are no notes, declare it properly.",
+    "success": "Report finalized. Absence of notes officially recorded."
+  },
+  "input": "{ \"id\": 11, \"notes\": \"\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "notes"],
+    "properties": {
+      "id": { "type": "integer" },
+      "notes": { "type": "null" }
+    },
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "dock3-01",
+  "title": "No Extra Fields",
+  "description": "This manifest contains an extra field that is not allowed. Remove it to pass validation.",
+  "story": {
+    "before": "The inspector scans the manifest: “This contains an unregistered field. If it’s not in the schema, it doesn’t exist in the harbor system.”",
+    "success": "The scanner confirms: “Strict manifest accepted. No unauthorized fields detected.”"
+  },
+  "input": "{ \"id\": 3, \"name\": \"Teekanne\", \"color\": \"red\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "name"],
+    "properties": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

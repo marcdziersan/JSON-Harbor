@@ -1,0 +1,22 @@
+{
+  "id": "dock3-04",
+  "title": "Object vs Array Mixup",
+  "description": "The 'containers' field must be an array of integers. Fix the structure to match the schema.",
+  "story": {
+    "before": "Container tracking is out of sync. “This looks like an object with numeric keys. We need a real array of container IDs.”",
+    "success": "Tracking restored. “Containers registered as a proper list. Movement cleared.”"
+  },
+  "input": "{ \"id\": 6, \"containers\": { \"0\": 1001, \"1\": 1002 } }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "containers"],
+    "properties": {
+      "id": { "type": "integer" },
+      "containers": {
+        "type": "array",
+        "items": { "type": "integer" }
+      }
+    },
+    "additionalProperties": false
+  }
+}

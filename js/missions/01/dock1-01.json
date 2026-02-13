@@ -1,0 +1,19 @@
+{
+  "id": "dock1-01",
+  "title": "Broken Manifest",
+  "description": "Repair the JSON so it becomes valid and matches the schema.",
+  "story": {
+    "before": "A small cargo boat arrives in the fog. The captain hands you a soggy manifest: “Salt water got into the paperwork. Can you fix it before we unload?”",
+    "success": "The captain exhales. “Perfect. The dock crew can finally start unloading.”"
+  },
+  "input": "{ \"id\": 1, name: \"Container\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "name"],
+    "properties": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

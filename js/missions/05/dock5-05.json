@@ -1,0 +1,17 @@
+{
+  "id": "dock5-05",
+  "title": "Final Clearance",
+  "description": "Produce the final clearance report format.",
+  "story": {
+    "before": "The final test. The Harbor Master watches silently. “Prepare the official clearance report.”",
+    "success": "Silence. Then a firm handshake. “You are now a certified JSON Harbor Inspector.”"
+  },
+  "input": "{ \"dock\": 5, \"grade\": \"A\" }",
+  "expected": {
+    "cleared": true,
+    "report": {
+      "dock": 5,
+      "grade": "A"
+    }
+  }
+}

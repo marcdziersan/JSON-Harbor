@@ -1,0 +1,19 @@
+{
+  "id": "dock2-03",
+  "title": "Boolean Not String",
+  "description": "The clearance flag must be a boolean (true/false), not a string.",
+  "story": {
+    "before": "The clearance system is strict. “Is this cargo cleared? Yes or no. Not as text. As a boolean.”",
+    "success": "Clearance accepted. The barrier lifts automatically."
+  },
+  "input": "{ \"id\": 8, \"cleared\": \"true\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "cleared"],
+    "properties": {
+      "id": { "type": "integer" },
+      "cleared": { "type": "boolean" }
+    },
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "dock1-02",
+  "title": "Missing Quotes",
+  "description": "Fix the invalid JSON. The payload must contain an integer id and a string item.",
+  "story": {
+    "before": "The harbor clerk points at the manifest. “Some keys are missing proper quotes. Our scanners reject anything that isn’t strict JSON.”",
+    "success": "The clerk nods. “Clean and valid. The scanner accepts it now.”"
+  },
+  "input": "{ id: 7, \"item\": \"Rope\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "item"],
+    "properties": {
+      "id": { "type": "integer" },
+      "item": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

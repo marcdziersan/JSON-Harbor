@@ -1,0 +1,14 @@
+{
+  "id": "dock5-04",
+  "title": "Extract Summary",
+  "description": "Extract shipmentId and itemCount into a summary object.",
+  "story": {
+    "before": "Supervisors don’t want full manifests — only summaries. “Extract what matters.”",
+    "success": "Summary generated. Executive dashboard updated."
+  },
+  "input": "{ \"shipment\": { \"id\": 2001, \"items\": [ { \"id\": 1 }, { \"id\": 2 }, { \"id\": 3 } ] } }",
+  "expected": {
+    "shipmentId": 2001,
+    "itemCount": 3
+  }
+}

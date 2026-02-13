@@ -1,0 +1,19 @@
+{
+  "id": "dock1-05",
+  "title": "Array vs Object",
+  "description": "This payload is an array, but the harbor expects a single object. Fix it to match the schema.",
+  "story": {
+    "before": "A rookie inspector reports: “The manifest is wrapped in an array. Our system expects one object per shipment, not a list.”",
+    "success": "The rookie smiles. “Got it. One shipment, one object. Approved.”"
+  },
+  "input": "[ { \"id\": 1, \"name\": \"Box\" } ]",
+  "schema": {
+    "type": "object",
+    "required": ["id", "name"],
+    "properties": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

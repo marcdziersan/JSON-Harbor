@@ -1,0 +1,19 @@
+{
+  "id": "dock2-02",
+  "title": "Missing Required Field",
+  "description": "A manifest must include both 'id' and 'owner'. Add the missing required property.",
+  "story": {
+    "before": "A supervisor approaches. “Every shipment must have an owner. We cannot process anonymous cargo.”",
+    "success": "The supervisor nods. “Ownership confirmed. Continue.”"
+  },
+  "input": "{ \"id\": 20 }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "owner"],
+    "properties": {
+      "id": { "type": "integer" },
+      "owner": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}
