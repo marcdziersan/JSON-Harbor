@@ -22,14 +22,19 @@
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
+
+html { 
+  background: url(../assets/images/wall.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 body{
   margin:0;
   font-family:var(--sans);
   color:var(--txt);
-  background:
-    radial-gradient(1000px 600px at 20% -10%, rgba(0,212,166,.18), transparent 60%),
-    radial-gradient(900px 700px at 110% 10%, rgba(37,178,255,.14), transparent 55%),
-    linear-gradient(180deg, var(--bg0), var(--bg1) 40%, var(--bg2));
 }
 
 /* Topbar */
@@ -347,3 +352,4 @@ body{
 .btn.primary:hover{
   background: rgba(0,212,166,.20);
 }
+
