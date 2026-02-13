@@ -248,9 +248,21 @@ CSS uses breakpoints at:
 
 ## 📜 License
 
-Educational project.
+This project is licensed under the MIT License.
 
-Use, modify, extend freely.
+You are free to:
+
+- Use
+- Modify
+- Distribute
+- Fork
+- Integrate into educational material
+- Use commercially
+
+Provided that the original copyright notice and license text
+are included in all copies or substantial portions of the Software.
+
+See the LICENSE file for full details.
 
 ------------------------------------------------------------------------
 
