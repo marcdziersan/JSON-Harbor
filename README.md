@@ -38,12 +38,14 @@ You cannot skip ahead.
 ## 🗂 Project Structure
 
 ```
-/
-├── index.html          # Compendium (entry page)
-├── game.html           # JSON Harbor game
+.
+├── index.html                # Compendium (entry page)
+├── game.html                 # JSON Harbor game
+│
 ├── css/
 │   ├── style.css
 │   └── kstyle.css
+│
 ├── js/
 │   ├── engine.js
 │   ├── validator.js
@@ -51,11 +53,42 @@ You cannot skip ahead.
 │   ├── kscript.json
 │   └── missions/
 │       ├── missions.json
+│       │
 │       ├── 01/
+│       │   ├── dock1-01.json
+│       │   ├── dock1-02.json
+│       │   ├── dock1-03.json
+│       │   ├── dock1-04.json
+│       │   └── dock1-05.json
+│       │
 │       ├── 02/
+│       │   ├── dock2-01.json
+│       │   ├── dock2-02.json
+│       │   ├── dock2-03.json
+│       │   ├── dock2-04.json
+│       │   └── dock2-05.json
+│       │
 │       ├── 03/
+│       │   ├── dock3-01.json
+│       │   ├── dock3-02.json
+│       │   ├── dock3-03.json
+│       │   ├── dock3-04.json
+│       │   └── dock3-05.json
+│       │
 │       ├── 04/
+│       │   ├── dock4-01.json
+│       │   ├── dock4-02.json
+│       │   ├── dock4-03.json
+│       │   ├── dock4-04.json
+│       │   └── dock4-05.json
+│       │
 │       └── 05/
+│           ├── dock5-01.json
+│           ├── dock5-02.json
+│           ├── dock5-03.json
+│           ├── dock5-04.json
+│           └── dock5-05.json
+│
 └── README.md
 
 ```
