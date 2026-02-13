@@ -233,16 +233,15 @@ CSS uses breakpoints at:
 
 ## 🔮 Future Ideas
 
--   Syntax highlighting editor
--   Hint system per mission
--   Scoring system
--   Time challenge mode
--   Mission randomizer
--   Dark/Light theme toggle
--   Internationalization
--   Achievement system
--   Instructor mode
--   API version for classroom use
+- **Rebuild / Refactor (Server-backed Edition):** migrate the current static/local version to a PHP backend with **SQLite** (default) or **MySQL** for persistent data storage.
+  - Store mission progress server-side (accounts optional)
+  - Persist statistics (attempts, success rate, time per dock)
+  - Admin tools to manage missions (CRUD) and publish new docks
+  - Optional REST API for missions/progress
+- **Instructor / Classroom Mode:** curated mission sets, reset controls, and exportable progress reports.
+- **Hint System:** progressive hints (concept → direction → near-solution) without revealing full answers.
+- **Editor Improvements:** JSON formatting button, syntax highlighting, and error pinpointing (line/column).
+- **Accessibility & UX Polish:** better keyboard flow, focus states, and mobile-first tweaks.
 
 ------------------------------------------------------------------------
 
