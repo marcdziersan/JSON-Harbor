@@ -1,83 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>JSON Harbor</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="JSON Harbor is a browser-based learning game for JSON syntax, schema checks, custom rules and expected output validation.">
+  <title>JSON Harbor — Mission Game</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js" defer></script>
+  <script src="js/utils.js" defer></script>
+  <script src="js/storage.js" defer></script>
+  <script src="js/validator.js" defer></script>
+  <script src="js/comparator.js" defer></script>
+  <script src="js/engine.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#json-editor">Skip to editor</a>
 
-<header class="header">
-  <div class="header-row">
-    <div class="header-left">
-      <h1>⚓ JSON Harbor</h1>
-      <div class="mission-info">
-        <span id="mission-title">Welcome...</span>
+  <header class="header">
+    <div class="header-row">
+      <div class="header-left">
+        <p class="eyebrow">Interactive JSON Training</p>
+        <h1>⚓ JSON Harbor</h1>
+        <p class="mission-info" id="mission-title">Loading mission...</p>
+      </div>
+
+      <nav class="header-actions" aria-label="Primary navigation">
+        <a class="toplink" href="index.html">Compendium</a>
+        <a class="toplink primary" id="dock-help-link" href="index.html#dock1-guide">Dock Help</a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="overlay" class="overlay overlay-show" role="dialog" aria-modal="true" aria-hidden="false" aria-labelledby="overlay-title">
+    <div class="overlay-card">
+      <h2 class="overlay-title" id="overlay-title">Welcome to JSON Harbor</h2>
+      <p class="overlay-text" id="overlay-text">Loading...</p>
+      <div class="overlay-actions">
+        <button id="overlay-secondary" class="btn-secondary" type="button" hidden>Back</button>
+        <button id="overlay-primary" class="btn-primary" type="button">Continue</button>
       </div>
     </div>
-
-    <div class="header-actions">
-      <a class="toplink" href="index.html">Compendium</a>
-      <a class="toplink primary" id="dock-help-link" href="index.html#dock1-guide">Dock Help</a>
-    </div>
   </div>
-</header>
 
-<!-- INTRO / DOCK COMPLETE OVERLAY -->
-<div id="overlay" class="overlay overlay-show">
-    <div class="overlay-card">
-        <div class="overlay-title" id="overlay-title">Welcome to JSON Harbor</div>
-        <div class="overlay-text" id="overlay-text">
-            Tonight the fog is thick. Ships are arriving with damaged manifests.<br>
-            Your job: inspect the payloads, fix the JSON, and clear the cargo.
-        </div>
-
-        <div class="overlay-actions">
-            <button id="overlay-secondary" class="btn-secondary" style="display:none;">Back</button>
-            <button id="overlay-primary" class="btn-primary">Continue</button>
-        </div>
-    </div>
-</div>
-
-<main class="container">
-
-    <!-- Left: Progress / Dock list -->
-    <section class="panel left-panel">
-        <h2>Harbor Log</h2>
-
-        <div class="progress-summary" id="progress-summary">Loading...</div>
-        <div id="mission-list" class="mission-list"></div>
+  <main class="container">
+    <section class="panel left-panel" aria-labelledby="harbor-log-title">
+      <div class="panel-head">
+        <h2 id="harbor-log-title">Harbor Log</h2>
+        <span class="panel-kicker">Progress</span>
+      </div>
+      <div class="progress-summary" id="progress-summary" aria-live="polite">Loading...</div>
+      <div id="mission-list" class="mission-list"></div>
     </section>
 
-    <!-- Center: Editor -->
-    <section class="panel editor-panel">
-        <h2>JSON Editor</h2>
-        <textarea id="json-editor" spellcheck="false"></textarea>
-
-        <div class="editor-actions">
-            <button id="reset-btn">Reset</button>
-            <button id="validate-btn">Validate</button>
-        </div>
+    <section class="panel editor-panel" aria-labelledby="editor-title">
+      <div class="panel-head">
+        <h2 id="editor-title">JSON Editor</h2>
+        <span class="panel-kicker">Ctrl + Enter validates</span>
+      </div>
+      <label class="sr-only" for="json-editor">Mission JSON editor</label>
+      <textarea id="json-editor" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+      <div class="editor-actions">
+        <button id="reset-btn" class="btn-reset" type="button">Reset</button>
+        <button id="validate-btn" class="btn-validate" type="button">Validate</button>
+      </div>
     </section>
 
-    <!-- Right: Feedback -->
-    <section class="panel right-panel">
-        <h2>Validation Result</h2>
-        <div id="feedback" class="feedback neutral">
-            Awaiting validation...
-        </div>
+    <section class="panel right-panel" aria-labelledby="result-title">
+      <div class="panel-head">
+        <h2 id="result-title">Validation Result</h2>
+        <span class="panel-kicker">Parser · Schema · Rules</span>
+      </div>
+      <div id="feedback" class="feedback neutral" role="status" aria-live="polite">Awaiting validation...</div>
+      <div class="hint-box">
+        <strong>Workflow</strong>
+        <span>Fix syntax first, then schema, then custom rules. Dock 5 checks exact expected output.</span>
+      </div>
     </section>
+  </main>
 
-</main>
-
-<footer class="footer">
-    JSON Harbor – Inspect. Validate. Release.
-</footer>
-
-<script src="js/validator.js"></script>
-<script src="js/comparator.js"></script>
-<script src="js/engine.js"></script>
-
+  <footer class="footer">
+    JSON Harbor — Inspect. Validate. Release.
+  </footer>
 </body>
 </html>

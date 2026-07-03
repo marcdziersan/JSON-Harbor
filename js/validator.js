@@ -1,23 +1,25 @@
 "use strict";
-const JsonValidator = (function () {
 
+window.JsonHarbor = window.JsonHarbor || {};
+
+window.JsonHarbor.Validator = (function () {
   function parse(text) {
     try {
       return { valid: true, data: JSON.parse(text) };
-    } catch (err) {
-      return { valid: false, error: err && err.message ? err.message : "Invalid JSON." };
+    } catch (error) {
+      return { valid: false, error: error && error.message ? error.message : "Invalid JSON." };
     }
   }
 
   function validateAgainstSchema(data, schema) {
     const errors = [];
     validateNode(data, schema, "", errors);
-    return errors.length === 0 ? { valid: true } : { valid: false, errors };
+    return errors.length === 0 ? { valid: true, errors: [] } : { valid: false, errors };
   }
 
   function validateRules(data, rules) {
     const errors = [];
-    if (!Array.isArray(rules)) return { valid: true };
+    if (!Array.isArray(rules)) return { valid: true, errors: [] };
 
     for (const rule of rules) {
       if (!rule || typeof rule !== "object") continue;
@@ -26,75 +28,122 @@ const JsonValidator = (function () {
         case "enum":
           ruleEnum(data, rule, errors);
           break;
-
         case "minItems":
           ruleMinItems(data, rule, errors);
           break;
-
         case "maxItems":
           ruleMaxItems(data, rule, errors);
           break;
-
         case "unique":
           ruleUnique(data, rule, errors);
           break;
-
         case "stringLength":
           ruleStringLength(data, rule, errors);
           break;
-
         default:
-          // unknown rule type -> ignore (forward compatible)
+          errors.push({ path: rule.path || "/", message: `Unknown rule type '${rule.type}'.` });
           break;
       }
     }
 
-    return errors.length === 0 ? { valid: true } : { valid: false, errors };
+    return errors.length === 0 ? { valid: true, errors: [] } : { valid: false, errors };
   }
 
   function validateNode(value, schema, path, errors) {
     if (!schema || typeof schema !== "object") return;
 
-    if (schema.type) {
-      if (!typeMatches(value, schema.type)) {
-        errors.push({ path: path || "/", message: `Expected type ${schema.type}` });
-      }
+    if (schema.type && !typeMatches(value, schema.type)) {
+      errors.push({ path: path || "/", message: `Expected type ${schema.type}, got ${describeType(value)}.` });
+      return;
+    }
+
+    if (schema.enum && Array.isArray(schema.enum) && !schema.enum.includes(value)) {
+      errors.push({ path: path || "/", message: `Value must be one of: ${schema.enum.join(", ")}.` });
     }
 
     if (schema.type === "object" && isPlainObject(value)) {
+      validateObject(value, schema, path, errors);
+    }
 
-      if (Array.isArray(schema.required)) {
-        for (const key of schema.required) {
-          if (!Object.prototype.hasOwnProperty.call(value, key)) {
-            errors.push({ path: (path || "") + "/" + key, message: "Missing required property" });
-          }
-        }
-      }
+    if (schema.type === "array" && Array.isArray(value)) {
+      validateArray(value, schema, path, errors);
+    }
 
-      if (schema.properties && typeof schema.properties === "object") {
-        for (const key of Object.keys(schema.properties)) {
-          if (Object.prototype.hasOwnProperty.call(value, key)) {
-            validateNode(value[key], schema.properties[key], (path || "") + "/" + key, errors);
-          }
-        }
-      }
+    if (schema.type === "string" && typeof value === "string") {
+      validateString(value, schema, path, errors);
+    }
 
-      if (schema.additionalProperties === false && schema.properties && typeof schema.properties === "object") {
-        const allowed = new Set(Object.keys(schema.properties));
-        for (const key of Object.keys(value)) {
-          if (!allowed.has(key)) {
-            errors.push({ path: (path || "") + "/" + key, message: "Additional property not allowed" });
-          }
+    if ((schema.type === "number" || schema.type === "integer") && typeof value === "number") {
+      validateNumber(value, schema, path, errors);
+    }
+  }
+
+  function validateObject(value, schema, path, errors) {
+    if (Array.isArray(schema.required)) {
+      for (const key of schema.required) {
+        if (!Object.prototype.hasOwnProperty.call(value, key)) {
+          errors.push({ path: joinPath(path, key), message: "Missing required property." });
         }
       }
     }
 
-    if (schema.type === "array" && Array.isArray(value)) {
-      if (schema.items) {
-        for (let i = 0; i < value.length; i++) {
-          validateNode(value[i], schema.items, (path || "") + "/" + i, errors);
+    if (schema.properties && typeof schema.properties === "object") {
+      for (const key of Object.keys(schema.properties)) {
+        if (Object.prototype.hasOwnProperty.call(value, key)) {
+          validateNode(value[key], schema.properties[key], joinPath(path, key), errors);
         }
       }
+    }
+
+    if (schema.additionalProperties === false && schema.properties && typeof schema.properties === "object") {
+      const allowed = new Set(Object.keys(schema.properties));
+      for (const key of Object.keys(value)) {
+        if (!allowed.has(key)) {
+          errors.push({ path: joinPath(path, key), message: "Additional property not allowed." });
+        }
+      }
+    }
+  }
+
+  function validateArray(value, schema, path, errors) {
+    if (Number.isFinite(Number(schema.minItems)) && value.length < Number(schema.minItems)) {
+      errors.push({ path: path || "/", message: `Must contain at least ${schema.minItems} items.` });
+    }
+    if (Number.isFinite(Number(schema.maxItems)) && value.length > Number(schema.maxItems)) {
+      errors.push({ path: path || "/", message: `Must contain at most ${schema.maxItems} items.` });
+    }
+    if (schema.items) {
+      for (let index = 0; index < value.length; index += 1) {
+        validateNode(value[index], schema.items, joinPath(path, String(index)), errors);
+      }
+    }
+  }
+
+  function validateString(value, schema, path, errors) {
+    if (Number.isFinite(Number(schema.minLength)) && value.length < Number(schema.minLength)) {
+      errors.push({ path: path || "/", message: `String too short (min ${schema.minLength}).` });
+    }
+    if (Number.isFinite(Number(schema.maxLength)) && value.length > Number(schema.maxLength)) {
+      errors.push({ path: path || "/", message: `String too long (max ${schema.maxLength}).` });
+    }
+    if (schema.pattern) {
+      try {
+        const regex = new RegExp(schema.pattern);
+        if (!regex.test(value)) {
+          errors.push({ path: path || "/", message: `String does not match pattern ${schema.pattern}.` });
+        }
+      } catch {
+        errors.push({ path: path || "/", message: `Invalid schema pattern ${schema.pattern}.` });
+      }
+    }
+  }
+
+  function validateNumber(value, schema, path, errors) {
+    if (Number.isFinite(Number(schema.minimum)) && value < Number(schema.minimum)) {
+      errors.push({ path: path || "/", message: `Number must be >= ${schema.minimum}.` });
+    }
+    if (Number.isFinite(Number(schema.maximum)) && value > Number(schema.maximum)) {
+      errors.push({ path: path || "/", message: `Number must be <= ${schema.maximum}.` });
     }
   }
 
@@ -111,8 +160,15 @@ const JsonValidator = (function () {
     }
   }
 
-  function isPlainObject(v) {
-    return typeof v === "object" && v !== null && !Array.isArray(v);
+  function describeType(value) {
+    if (value === null) return "null";
+    if (Array.isArray(value)) return "array";
+    if (Number.isInteger(value)) return "integer";
+    return typeof value;
+  }
+
+  function isPlainObject(value) {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
   }
 
   function ruleEnum(root, rule, errors) {
@@ -124,7 +180,7 @@ const JsonValidator = (function () {
 
     const values = Array.isArray(rule.values) ? rule.values : [];
     if (!values.includes(node.value)) {
-      errors.push({ path: rule.path || "/", message: rule.message || `Value must be one of: ${values.join(", ")}` });
+      errors.push({ path: rule.path || "/", message: rule.message || `Value must be one of: ${values.join(", ")}.` });
     }
   }
 
@@ -163,23 +219,23 @@ const JsonValidator = (function () {
 
     const key = String(rule.key || "");
     if (!key) {
-      errors.push({ path: rule.path || "/", message: "Unique rule requires a 'key'." });
+      errors.push({ path: rule.path || "/", message: "Unique rule requires a key." });
       return;
     }
 
     const seen = new Set();
-    for (let i = 0; i < node.value.length; i++) {
-      const item = node.value[i];
+    for (let index = 0; index < node.value.length; index += 1) {
+      const item = node.value[index];
       if (!isPlainObject(item) || !Object.prototype.hasOwnProperty.call(item, key)) {
-        errors.push({ path: `${rule.path}/${i}`, message: `Each item must be an object with property '${key}'.` });
+        errors.push({ path: `${rule.path}/${index}`, message: `Each item must be an object with property '${key}'.` });
         continue;
       }
-      const val = item[key];
-      const sig = typeof val + ":" + String(val);
-      if (seen.has(sig)) {
-        errors.push({ path: `${rule.path}/${i}/${key}`, message: rule.message || `Duplicate ${key} found.` });
+
+      const signature = `${typeof item[key]}:${String(item[key])}`;
+      if (seen.has(signature)) {
+        errors.push({ path: `${rule.path}/${index}/${key}`, message: rule.message || `Duplicate ${key} found.` });
       } else {
-        seen.add(sig);
+        seen.add(signature);
       }
     }
   }
@@ -187,94 +243,99 @@ const JsonValidator = (function () {
   function ruleStringLength(root, rule, errors) {
     const min = Number.isFinite(Number(rule.min)) ? Number(rule.min) : null;
     const max = Number.isFinite(Number(rule.max)) ? Number(rule.max) : null;
-
     const matches = getByWildcardPath(root, rule.path);
+
     if (matches.length === 0) {
       errors.push({ path: rule.path || "/", message: rule.message || "Path not found for stringLength." });
       return;
     }
 
-    for (const m of matches) {
-      if (typeof m.value !== "string") {
-        errors.push({ path: m.path, message: `Expected string for length check.` });
+    for (const match of matches) {
+      if (typeof match.value !== "string") {
+        errors.push({ path: match.path, message: "Expected string for length check." });
         continue;
       }
-      if (min !== null && m.value.length < min) {
-        errors.push({ path: m.path, message: rule.message || `String too short (min ${min}).` });
+      if (min !== null && match.value.length < min) {
+        errors.push({ path: match.path, message: rule.message || `String too short (min ${min}).` });
       }
-      if (max !== null && m.value.length > max) {
-        errors.push({ path: m.path, message: rule.message || `String too long (max ${max}).` });
+      if (max !== null && match.value.length > max) {
+        errors.push({ path: match.path, message: rule.message || `String too long (max ${max}).` });
       }
     }
   }
 
   function getByPath(root, path) {
-    const segs = normalizePath(path);
-    let cur = root;
+    const segments = normalizePath(path);
+    let current = root;
 
-    for (const seg of segs) {
-      if (cur === null || cur === undefined) return { missing: true, value: undefined };
-      if (Array.isArray(cur)) {
-        const idx = parseInt(seg, 10);
-        if (!Number.isInteger(idx) || idx < 0 || idx >= cur.length) return { missing: true, value: undefined };
-        cur = cur[idx];
-      } else if (typeof cur === "object") {
-        if (!Object.prototype.hasOwnProperty.call(cur, seg)) return { missing: true, value: undefined };
-        cur = cur[seg];
-      } else {
-        return { missing: true, value: undefined };
+    for (const segment of segments) {
+      if (current === null || current === undefined) return { missing: true, value: undefined };
+
+      if (Array.isArray(current)) {
+        const index = Number.parseInt(segment, 10);
+        if (!Number.isInteger(index) || index < 0 || index >= current.length) return { missing: true, value: undefined };
+        current = current[index];
+        continue;
       }
+
+      if (typeof current === "object") {
+        if (!Object.prototype.hasOwnProperty.call(current, segment)) return { missing: true, value: undefined };
+        current = current[segment];
+        continue;
+      }
+
+      return { missing: true, value: undefined };
     }
 
-    return { missing: false, value: cur };
+    return { missing: false, value: current };
   }
 
   function getByWildcardPath(root, path) {
-    const segs = normalizePath(path);
-    const out = [];
-    walkWildcard(root, segs, 0, "", out);
-    return out;
+    const segments = normalizePath(path);
+    const matches = [];
+    walkWildcard(root, segments, 0, "", matches);
+    return matches;
   }
 
-  function walkWildcard(cur, segs, i, currentPath, out) {
-    if (i >= segs.length) {
-      out.push({ path: currentPath || "/", value: cur });
+  function walkWildcard(current, segments, index, currentPath, matches) {
+    if (index >= segments.length) {
+      matches.push({ path: currentPath || "/", value: current });
       return;
     }
 
-    const seg = segs[i];
-
-    if (seg === "*") {
-      if (!Array.isArray(cur)) return;
-      for (let idx = 0; idx < cur.length; idx++) {
-        walkWildcard(cur[idx], segs, i + 1, (currentPath || "") + "/" + idx, out);
+    const segment = segments[index];
+    if (segment === "*") {
+      if (!Array.isArray(current)) return;
+      for (let itemIndex = 0; itemIndex < current.length; itemIndex += 1) {
+        walkWildcard(current[itemIndex], segments, index + 1, joinPath(currentPath, String(itemIndex)), matches);
       }
       return;
     }
 
-    if (Array.isArray(cur)) {
-      const idx = parseInt(seg, 10);
-      if (!Number.isInteger(idx) || idx < 0 || idx >= cur.length) return;
-      walkWildcard(cur[idx], segs, i + 1, (currentPath || "") + "/" + idx, out);
+    if (Array.isArray(current)) {
+      const arrayIndex = Number.parseInt(segment, 10);
+      if (!Number.isInteger(arrayIndex) || arrayIndex < 0 || arrayIndex >= current.length) return;
+      walkWildcard(current[arrayIndex], segments, index + 1, joinPath(currentPath, String(arrayIndex)), matches);
       return;
     }
 
-    if (typeof cur === "object" && cur !== null) {
-      if (!Object.prototype.hasOwnProperty.call(cur, seg)) return;
-      walkWildcard(cur[seg], segs, i + 1, (currentPath || "") + "/" + seg, out);
+    if (typeof current === "object" && current !== null && Object.prototype.hasOwnProperty.call(current, segment)) {
+      walkWildcard(current[segment], segments, index + 1, joinPath(currentPath, segment), matches);
     }
   }
 
   function normalizePath(path) {
-    const p = String(path || "").trim();
-    if (p === "" || p === "/") return [];
-    return p.replace(/^\//, "").split("/").filter(Boolean);
+    const clean = String(path || "").trim();
+    if (clean === "" || clean === "/") return [];
+    return clean.replace(/^\//, "").split("/").filter(Boolean);
   }
 
-  return {
-    parse,
-    validateAgainstSchema,
-    validateRules
-  };
+  function joinPath(base, segment) {
+    return `${base || ""}/${String(segment).replaceAll("~", "~0").replaceAll("/", "~1")}`;
+  }
 
+  return { parse, validateAgainstSchema, validateRules, getByPath, getByWildcardPath };
 })();
+
+// Backwards-compatible global alias for older snippets/tests.
+window.JsonValidator = window.JsonHarbor.Validator;

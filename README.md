@@ -1,271 +1,300 @@
 # ⚓ JSON Harbor
 
-Interactive JSON validation learning game.
+**JSON Harbor** ist ein browserbasiertes Lernspiel für JSON-Grundlagen, Schema-Denken, Validierungsregeln und erwartete Ausgabeformate.
 
-JSON Harbor is a browser-based learning project that teaches JSON
-syntax, schema validation, structural correctness, and data
-transformation through progressive missions.
+Der Spieler übernimmt die Rolle eines Hafen-Inspektors. Eingehende Schiffe bringen beschädigte JSON-Manifeste. Jede Mission muss repariert werden, bis Parsing, Schema-Prüfung, Custom Rules oder erwartete Zielstruktur passen.
 
-The project consists of:
+---
 
--   📘 **Compendium** (index.html) – explanation and learning reference
--   🎮 **Game** (game.html) – interactive validation missions
--   🧠 Custom JSON validation engine (no external libraries)
--   💾 localStorage-based progress tracking
--   🔁 Automatic reset after full completion
+## Status
 
-------------------------------------------------------------------------
+**Version:** 0.3.0 Refactoring Release  
+**Projektart:** Lernprojekt / Portfolio-Projekt  
+**Technik:** HTML5, CSS3, Vanilla JavaScript, JSON, localStorage  
+**Abhängigkeiten:** keine externen Libraries, kein Build-Tool, kein Framework
 
-## 🌊 Concept
+---
 
-You are the Harbor Inspector.
+## Warum dieses Projekt existiert
 
-Incoming ships arrive with damaged or inconsistent JSON manifests. Your
-job is to:
+JSON wirkt am Anfang oft einfach: geschweifte Klammern, Doppelpunkte, Arrays, fertig.
 
-1.  Fix the JSON
-2.  Pass parsing
-3.  Pass schema validation
-4.  Pass custom business rules
-5.  (Dock 5) Match exact expected output
+In echten Anwendungen reicht das aber nicht. Dort muss JSON:
 
-Missions unlock step-by-step.
+- syntaktisch korrekt sein,
+- passende Datentypen verwenden,
+- Pflichtfelder enthalten,
+- keine unerlaubten Zusatzfelder enthalten,
+- Listenregeln einhalten,
+- und teilweise exakt in ein erwartetes Ausgabeformat transformiert werden.
 
-You cannot skip ahead.
+JSON Harbor macht diese Punkte spielerisch sichtbar. Statt nur Regeln zu lesen, repariert man konkrete JSON-Payloads Schritt für Schritt.
 
-------------------------------------------------------------------------
+---
 
-## 🗂 Project Structure
+## Funktionen
 
-```
-.
-├── index.html                # Compendium (entry page)
-├── game.html                 # JSON Harbor game
+- interaktives JSON-Lernspiel im Browser
+- 5 Docks mit je 5 Missionen
+- progressive Freischaltung: Missionen werden nacheinander gelöst
+- Story-Overlays für Dock- und Missionsfortschritt
+- JSON-Editor mit Reset und Validierung
+- Tastenkürzel `Ctrl + Enter` zum Validieren
+- Fortschrittsspeicherung per `localStorage`
+- automatischer Reset nach vollständigem Abschluss
+- Compendium als Nachschlagewerk
+- Suchfunktion im Compendium
+- eigene JSON-Validierungslogik ohne externe Library
+- Expected-Output-Vergleich für Transformationsaufgaben
+
+---
+
+## Lerninhalte
+
+| Dock | Thema | Inhalt |
+|---|---|---|
+| Dock 1 | Syntax & Basics | Quotes, Kommata, Objekt/Array, gültiges JSON |
+| Dock 2 | Types & Required Fields | Integer, Number, Boolean, Null, Pflichtfelder |
+| Dock 3 | Structure & Additional Properties | Verschachtelung, erlaubte Felder, Objekt-/Array-Struktur |
+| Dock 4 | Lists & Rules | Min/Max Items, Unique Keys, Enum, Stringlängen |
+| Dock 5 | Transform & Expected Output | Ausgabe exakt nach Zielstruktur bauen |
+
+---
+
+## Technischer Stack
+
+| Bereich | Technik |
+|---|---|
+| Markup | HTML5 |
+| Styling | CSS3, mobile-first, responsive Layout |
+| Logik | Vanilla JavaScript |
+| Daten | JSON-Dateien |
+| Speicherung | Browser `localStorage` |
+| Hosting | statisch möglich, z. B. GitHub Pages, Apache, Nginx |
+
+---
+
+## Projektstruktur
+
+```txt
+JSON-Harbor/
+├── index.html                 # Compendium / Lernreferenz
+├── game.html                  # Spieloberfläche
+├── README.md                  # Projektdokumentation
+├── LICENSE                    # MIT-Lizenz
+│
+├── assets/
+│   └── images/
+│       └── wall.png           # Hintergrundbild
 │
 ├── css/
-│   ├── style.css
-│   └── kstyle.css
+│   ├── kstyle.css             # Compendium-Layout
+│   └── style.css              # Spiel-Layout
 │
 ├── js/
-│   ├── engine.js
-│   ├── validator.js
-│   ├── comparator.js
-│   ├── kscript.json
+│   ├── config.js              # zentrale Pfade und Version
+│   ├── utils.js               # DOM-, Escape-, Fetch- und Format-Helfer
+│   ├── storage.js             # Fortschritt und localStorage
+│   ├── validator.js           # Parser, Schema- und Rule-Validator
+│   ├── comparator.js          # Deep-Compare und Diff für Expected Output
+│   ├── engine.js              # Spielsteuerung
+│   ├── compendium.js          # Compendium-Rendering und Suche
+│   ├── kscript.json           # Compendium-Inhalte
 │   └── missions/
-│       ├── missions.json
-│       │
-│       ├── 01/
-│       │   ├── dock1-01.json
-│       │   ├── dock1-02.json
-│       │   ├── dock1-03.json
-│       │   ├── dock1-04.json
-│       │   └── dock1-05.json
-│       │
-│       ├── 02/
-│       │   ├── dock2-01.json
-│       │   ├── dock2-02.json
-│       │   ├── dock2-03.json
-│       │   ├── dock2-04.json
-│       │   └── dock2-05.json
-│       │
-│       ├── 03/
-│       │   ├── dock3-01.json
-│       │   ├── dock3-02.json
-│       │   ├── dock3-03.json
-│       │   ├── dock3-04.json
-│       │   └── dock3-05.json
-│       │
-│       ├── 04/
-│       │   ├── dock4-01.json
-│       │   ├── dock4-02.json
-│       │   ├── dock4-03.json
-│       │   ├── dock4-04.json
-│       │   └── dock4-05.json
-│       │
-│       └── 05/
-│           ├── dock5-01.json
-│           ├── dock5-02.json
-│           ├── dock5-03.json
-│           ├── dock5-04.json
-│           └── dock5-05.json
+│       ├── missions.json      # Dock- und Missionsindex
+│       ├── 01/                # Dock 1 Missionen
+│       ├── 02/                # Dock 2 Missionen
+│       ├── 03/                # Dock 3 Missionen
+│       ├── 04/                # Dock 4 Missionen
+│       └── 05/                # Dock 5 Missionen
 │
-└── README.md
-
+└── tools/
+    └── check-missions.mjs     # optionale Strukturprüfung per Node.js
 ```
 
-------------------------------------------------------------------------
+---
 
-## 🧠 Learning Goals
+## Starten
 
-### Dock 1 — Syntax & Basics
+Da die Anwendung JSON-Dateien per `fetch()` lädt, sollte sie über einen lokalen Webserver gestartet werden. Direktes Öffnen per `file://` kann je nach Browser blockiert werden.
 
--   Valid JSON format
--   Double quotes only
--   No trailing commas
--   Object vs array structure
+### Variante 1: Python
 
-### Dock 2 — Types & Required Fields
+```bash
+python -m http.server 8080
+```
 
--   String vs number vs integer
--   Boolean vs string
--   Required properties
--   Null handling
+Danach öffnen:
 
-### Dock 3 — Structure & Nesting
+```txt
+http://localhost:8080/
+```
 
--   Nested objects
--   Required inside nested structures
--   Additional properties restrictions
--   Correct array item types
+### Variante 2: PHP
 
-### Dock 4 — Lists & Rules
+```bash
+php -S localhost:8080
+```
 
--   Unique IDs
--   Min/max items
--   String length constraints
--   Enum values
+Danach öffnen:
 
-### Dock 5 — Transformations
+```txt
+http://localhost:8080/
+```
 
--   Expected output matching
--   Field normalization
--   Aggregation
--   Derived values
--   Exact deep comparison
+### Variante 3: GitHub Pages
 
-------------------------------------------------------------------------
+Repository veröffentlichen und GitHub Pages auf Branch `main` / Root aktivieren. Die Seite ist vollständig statisch und benötigt keinen Servercode.
 
-## ⚙️ How It Works
+---
 
-### 1️⃣ JSON Parsing
+## Bedienung
 
-JsonValidator.parse(text)
+1. `index.html` öffnen, um das Compendium zu lesen.
+2. Über **Start Game** die Spieloberfläche öffnen.
+3. JSON im Editor korrigieren.
+4. Mit **Validate** oder `Ctrl + Enter` prüfen.
+5. Nach erfolgreicher Mission wird die nächste Mission freigeschaltet.
 
-Fails early if JSON is syntactically invalid.
+Der Fortschritt wird im Browser gespeichert. Nach Abschluss aller Docks kann das Spiel neu gestartet werden.
 
-------------------------------------------------------------------------
+---
 
-### 2️⃣ Schema Validation (Custom Engine)
+## Mission-Format
 
-Supports a subset of JSON Schema:
+Eine Mission ist eine JSON-Datei mit Eingabe und Prüfdefinition.
 
--   type
--   required
--   properties
--   additionalProperties
--   items
--   enum
--   minItems / maxItems
--   string length rules
+### Beispiel: Schema-Mission
 
-No external libraries are used.
+```json
+{
+  "id": "dock1-01",
+  "title": "Broken Manifest",
+  "description": "Repair the JSON so it becomes valid and matches the schema.",
+  "input": "{ \"id\": 1, name: \"Container\" }",
+  "schema": {
+    "type": "object",
+    "required": ["id", "name"],
+    "properties": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}
+```
 
-------------------------------------------------------------------------
+### Unterstützte Schema-Elemente
 
-### 3️⃣ Custom Rules (Dock 4)
+- `type`: `object`, `array`, `string`, `integer`, `number`, `boolean`, `null`
+- `required`
+- `properties`
+- `additionalProperties: false`
+- `items`
+- `minItems`, `maxItems`
+- `minLength`, `maxLength`
+- `minimum`, `maximum`
+- `enum`
+- `pattern`
 
-Business rules such as:
+### Unterstützte Custom Rules
 
--   Unique IDs
--   Logical constraints
+- `enum`
+- `minItems`
+- `maxItems`
+- `unique`
+- `stringLength`
 
-------------------------------------------------------------------------
+### Expected Output
 
-### 4️⃣ Expected Output (Dock 5)
+Dock 5 nutzt `expected`, um die reparierte oder transformierte JSON-Struktur exakt gegen ein Zielobjekt zu prüfen.
 
-Deep comparison via:
+```json
+{
+  "input": "{ \"dock\": 5, \"grade\": \"A\" }",
+  "expected": {
+    "cleared": true,
+    "report": {
+      "dock": 5,
+      "grade": "A"
+    }
+  }
+}
+```
 
-JsonComparator.deepEqual(a, b)
+---
 
-Exact structure + values required.
+## Refactoring in Version 0.3.0
 
-------------------------------------------------------------------------
+Diese Version wurde strukturell überarbeitet.
 
-## 🔁 Progress System
+### Vorher
 
-Progress is stored in:
+- viel Logik direkt in wenigen großen Dateien
+- Compendium-Logik inline in `index.html`
+- Fortschritt, UI, Validierung und Spielablauf stärker vermischt
+- erwarteter Output gab nur eine allgemeine Fehlermeldung aus
 
-localStorage\[“json_harbor_progress_v2”\]
+### Jetzt
 
-Tracks:
+- zentrale Konfiguration in `js/config.js`
+- gemeinsame Hilfsfunktionen in `js/utils.js`
+- Fortschrittsspeicherung ausgelagert in `js/storage.js`
+- Compendium-Rendering ausgelagert in `js/compendium.js`
+- Spielsteuerung konzentriert in `js/engine.js`
+- Validator erweitert und defensiver gemacht
+- Comparator liefert jetzt konkrete Diff-Hinweise mit Pfad
+- HTML-Seiten sind schlanker und semantischer
+- CSS wurde mobile-first neu sortiert
+- optionale Missionsprüfung per `tools/check-missions.mjs`
 
--   introDone
--   helpDone
--   current dock
--   current mission
--   completed mission IDs
+---
 
-When Dock 5 is completed:
+## Missionsprüfung
 
--   Progress is wiped
--   Game resets to Dock 1
+Optional kann die Missionsstruktur mit Node.js geprüft werden:
 
-Replay-friendly design.
+```bash
+node tools/check-missions.mjs
+```
 
-------------------------------------------------------------------------
+Die Prüfung kontrolliert:
 
-## 🚀 Running Locally
+- Existenz von Docks und Missionen
+- doppelte Mission-IDs
+- Vollständigkeit der Missionsreferenzen
+- vorhandene Missionsdateien
+- `input` als String
+- mindestens eine Prüfdefinition pro Mission (`schema`, `rules` oder `expected`)
 
-Because missions are loaded via fetch(), you must run a local server.
+---
 
-### Python
+## Erweiterungsideen
 
-python -m http.server 8000
+- weitere Docks für REST-API-Responses
+- Level-Editor für eigene Missionen
+- Export/Import von Fortschritt
+- optionaler Lösungsmodus für Dozenten oder Lernbegleitung
+- Mehrsprachigkeit Deutsch/Englisch
+- kleine Test-Suite für Validator und Comparator
 
-Open:
+---
 
-http://localhost:8000
+## Grenzen
 
-------------------------------------------------------------------------
+JSON Harbor implementiert bewusst nur einen kompakten, lernorientierten Ausschnitt von JSON-Schema-Prüfungen. Es ersetzt keine vollständige JSON-Schema-Library wie Ajv.
 
-## 📱 Responsive Design
+Das ist Absicht: Ziel ist Nachvollziehbarkeit, nicht maximale Normabdeckung.
 
--   Desktop: 3-column layout
--   Tablet: stacked panels
--   Mobile: vertical flow with full-width buttons
+---
 
-CSS uses breakpoints at:
-
--   1024px
--   600px
-
-------------------------------------------------------------------------
-
-## 🔮 Future Ideas
-
-- **Rebuild / Refactor (Server-backed Edition):** migrate the current static/local version to a PHP backend with **SQLite** (default) or **MySQL** for persistent data storage.
-  - Store mission progress server-side (accounts optional)
-  - Persist statistics (attempts, success rate, time per dock)
-  - Admin tools to manage missions (CRUD) and publish new docks
-  - Optional REST API for missions/progress
-- **Instructor / Classroom Mode:** curated mission sets, reset controls, and exportable progress reports.
-- **Hint System:** progressive hints (concept → direction → near-solution) without revealing full answers.
-- **Editor Improvements:** JSON formatting button, syntax highlighting, and error pinpointing (line/column).
-- **Accessibility & UX Polish:** better keyboard flow, focus states, and mobile-first tweaks.
-
-------------------------------------------------------------------------
-
-## 📜 License
-
-This project is licensed under the MIT License.
-
-You are free to:
-
-- Use
-- Modify
-- Distribute
-- Fork
-- Integrate into educational material
-- Use commercially
-
-Provided that the original copyright notice and license text
-are included in all copies or substantial portions of the Software.
-
-See the LICENSE file for full details.
-
-------------------------------------------------------------------------
-
-## 👤 Author
+## Autor
 
 Marcus Dziersan  
-JSON Harbor — Inspect. Validate. Release.
+GitHub: [marcdziersan](https://github.com/marcdziersan)
+
+---
+
+## Lizenz
+
+Dieses Projekt steht unter der MIT-Lizenz. Details siehe [`LICENSE`](./LICENSE).
